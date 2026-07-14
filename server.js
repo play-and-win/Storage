@@ -31,6 +31,29 @@ app.get("/test", async (req, res) => {
 
 });
 
+// NEW TEST ENDPOINT
+app.get("/module", (req, res) => {
+
+    try {
+
+        const ff = require("@pure0cd/freefire-api");
+
+        res.json({
+            type: typeof ff,
+            module: ff
+        });
+
+    } catch (e) {
+
+        res.json({
+            success: false,
+            error: e.message
+        });
+
+    }
+
+});
+
 app.listen(PORT, () => {
     console.log("Server Started");
 });
