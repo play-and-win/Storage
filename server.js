@@ -148,6 +148,46 @@ app.get("/login-info", (req, res) => {
 });
 
 
+// SOURCE CODE OF METHODS
+app.get("/source", (req, res) => {
+
+    try {
+
+        const FF = require("@pure0cd/freefire-api");
+
+        const api = new FF();
+
+        res.json({
+
+            login: api.login.toString(),
+
+            searchAccount: api.searchAccount.toString(),
+
+            getPlayerProfile: api.getPlayerProfile.toString(),
+
+            getPlayerItems: api.getPlayerItems.toString(),
+
+            getPlayerStats: api.getPlayerStats.toString()
+
+        });
+
+    } catch (e) {
+
+        res.json({
+
+            success: false,
+
+            error: e.message,
+
+            stack: e.stack
+
+        });
+
+    }
+
+});
+
+
 app.listen(PORT, () => {
 
     console.log("Server Started");
