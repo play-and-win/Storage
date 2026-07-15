@@ -1,31 +1,30 @@
 import os
 import requests
-from dotenv import load_dotenv
+from flask import Flask, request, jsonify
 
-# .env फाइल से API key लोड करें
-load_dotenv()
-api_key = os.getenv("XAI_API_KEY")
+app = Flask(__name__)
 
-def generate_image(prompt_text):
+# पोर्ट रेंडर खुद देगा, अगर नहीं तो 8080 का उपयोग करें
+port = int(os.environ.get("PORT", 8080))
+
+@app.route('/')
+def home():
+    return "API is running!"
+
+@app.route('/generate', methods=['POST'])
+def generate():
+    prompt = request.json.get('prompt', 'A futuristic city')
+    api_key = os.getenv("XAI_API_KEY")
+    
     url = "https://api.x.xai/v1/images/generations"
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }
-    data = {
-        "model": "grok-imagine-image-quality",
-        "prompt": prompt_text
-    }
-
-    response = requests.post(url, headers=headers, json=data)
+    data = {"model": "grok-imagine-image-quality", "prompt": prompt}
     
-    if response.status_code == 200:
-        print("इमेज जेनरेट हो गई है!")
-        print(response.json())
-    else:
-        print(f"Error: {response.status_code}")
-        print(response.text)
+    response = requests.post(url, headers=headers, json=data)
+    return jsonify(response.json())
 
-# यहाँ अपना प्रॉम्प्ट लिखें
-my_prompt = "A beautiful futuristic city with flying cars, cinematic lighting"
-generate_image(my_prompt)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=port)
